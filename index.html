@@ -3,284 +3,1110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TradeXCorner</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
+<title>TradeXCorner – Master Currency Markets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --primary:#5B8CFF;
-  --accent:#00F5C4;
-  --dark:#0B1220;
+  --gold:#0057FF;
+  --gold-light:#4D8FFF;
+  --gold-dim:#003DB5;
+  --secondary:#00C896;
+  --accent2:#FF5C35;
+  --bg:#F5F7FF;
+  --bg2:#FFFFFF;
+  --bg3:#EEF2FF;
+  --surface:#FFFFFF;
+  --surface2:#EEF2FF;
+  --border:rgba(0,87,255,0.12);
+  --border2:rgba(0,87,255,0.3);
+  --text:#0A0F2E;
+  --text2:#5A6485;
+  --green:#00C896;
+  --red:#FF4757;
+  --accent:#0057FF;
 }
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Inter',sans-serif;
-}
-
+html{scroll-behavior:smooth}
 body{
-  background:linear-gradient(135deg,#0B1220,#1E293B);
-  color:white;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#EEF2FF}
+::-webkit-scrollbar-thumb{background:#0057FF;border-radius:2px}
+
+/* ── CANVAS HERO ── */
+#hero-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  z-index:0;pointer-events:none;
 }
 
-/* NAV */
+/* ── NAV ── */
 nav{
-  position:fixed;
-  width:100%;
-  padding:15px 20px;
-  display:flex;
-  justify-content:space-between;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
-  z-index:10;
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 4rem;
+  background:rgba(245,247,255,0);
+  border-bottom:1px solid transparent;
+  transition:all .4s ease;
 }
-
-nav h2{
-  color:var(--accent);
+nav.scrolled{
+  background:rgba(245,247,255,0.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
 }
-
-nav a{
-  color:#ccc;
+.logo{
+  font-family:'Syne',sans-serif;
+  font-weight:800;font-size:1.5rem;
+  letter-spacing:-0.02em;
+  background:linear-gradient(135deg,#0057FF,#00C896);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   text-decoration:none;
-  margin-left:15px;
-  font-size:14px;
+}
+.logo span{color:var(--text);-webkit-text-fill-color:var(--text2)}
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-links a{
+  color:var(--text2);text-decoration:none;
+  font-size:.9rem;font-weight:500;letter-spacing:.04em;
+  transition:color .25s;text-transform:uppercase;
+}
+.nav-links a:hover{color:#0057FF}
+.nav-cta{
+  background:linear-gradient(135deg,#0057FF,#003DB5);
+  color:#fff!important;
+  padding:.55rem 1.4rem;border-radius:6px;
+  font-weight:700!important;
+  transition:opacity .25s,transform .2s!important;
+}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:2px;background:#0057FF;border-radius:2px;transition:all .3s}
+.mobile-menu{
+  display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(245,247,255,0.99);z-index:99;
+  flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;
+  color:var(--text2);text-decoration:none;transition:color .25s;
+}
+.mobile-menu a:hover{color:#0057FF}
+.mobile-close{
+  position:absolute;top:1.5rem;right:2rem;
+  font-size:1.5rem;cursor:pointer;color:var(--text2);
+  background:none;border:none;
 }
 
-/* HERO */
-.hero{
-  padding:120px 20px 80px;
-  text-align:center;
-}
+/* ── SECTIONS ── */
+section{position:relative;z-index:1}
+.section-inner{max-width:1200px;margin:0 auto;padding:0 2rem}
 
-.hero h1{
-  font-size:38px;
-  font-weight:800;
-  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
-  -webkit-background-clip:text;
-  color:transparent;
+/* ── HERO ── */
+#home{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:8rem 2rem 4rem;
+  position:relative;z-index:1;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,87,255,0.07) 0%,transparent 70%);
 }
-
-.hero p{
-  margin-top:12px;
-  opacity:0.8;
-  font-size:15px;
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(0,200,150,0.4);
+  border-radius:100px;padding:.4rem 1.2rem;
+  font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  color:#00A078;margin-bottom:2rem;
+  background:rgba(0,200,150,0.08);
+  animation:fadeDown .8s ease both;
 }
+.dot{width:6px;height:6px;background:#00C896;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 
-.btn{
-  margin-top:20px;
-  padding:14px 25px;
-  border-radius:30px;
-  border:none;
-  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
-  color:#000;
-  font-weight:600;
-  cursor:pointer;
+h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.8rem,7vw,6rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-0.03em;
+  animation:fadeUp .9s ease .1s both;
 }
-
-/* SECTION */
-section{
-  padding:60px 20px;
+h1 .gold{
+  background:linear-gradient(135deg,#0057FF,#00C896,#0057FF);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
 }
+@keyframes shimmer{to{background-position:200% center}}
+.hero-sub{
+  max-width:620px;margin:1.5rem auto 2.5rem;
+  color:var(--text2);font-size:1.15rem;font-weight:300;
+  animation:fadeUp .9s ease .2s both;
+}
+.hero-btns{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .9s ease .3s both;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#0057FF,#003DB5);
+  color:#fff;font-weight:700;
+  padding:.85rem 2.2rem;border-radius:8px;border:none;
+  font-size:1rem;cursor:pointer;text-decoration:none;
+  transition:transform .2s,box-shadow .2s;
+  display:inline-block;
+  box-shadow:0 8px 30px rgba(0,87,255,0.3);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 50px rgba(0,87,255,0.45)}
+.btn-outline{
+  border:2px solid #0057FF;color:#0057FF;
+  background:transparent;
+  padding:.85rem 2.2rem;border-radius:8px;
+  font-size:1rem;cursor:pointer;text-decoration:none;
+  transition:all .25s;display:inline-block;font-weight:600;
+}
+.btn-outline:hover{background:rgba(0,87,255,0.07);border-color:#0057FF}
 
+/* ── TICKER ── */
+.ticker-bar{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;padding:.75rem 0;
+}
+.ticker-track{
+  display:flex;gap:3rem;
+  animation:tickerScroll 30s linear infinite;
+  white-space:nowrap;width:max-content;
+}
+.ticker-item{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.85rem;font-weight:500;
+}
+.ticker-item .pair{color:var(--text2)}
+.ticker-item .price{color:var(--text)}
+.ticker-item .change.up{color:var(--green)}
+.ticker-item .change.down{color:var(--red)}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── STATS ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;margin:4rem 0;
+}
+.stat-card{
+  background:var(--surface);
+  padding:2rem;text-align:center;
+  transition:background .25s;
+}
+.stat-card:hover{background:var(--surface2)}
+.stat-number{
+  font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,#0057FF,#00C896);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;
+}
+.stat-label{color:var(--text2);font-size:.85rem;margin-top:.3rem;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── SECTION LABELS ── */
+.eyebrow{
+  display:inline-block;font-size:.75rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:#0057FF;
+  margin-bottom:.8rem;
+  background:rgba(0,87,255,0.08);padding:.3rem .8rem;border-radius:100px;
+  border:1px solid rgba(0,87,255,0.2);
+}
 .section-title{
+  font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:800;line-height:1.1;letter-spacing:-0.02em;
+}
+.section-sub{color:var(--text2);font-size:1.05rem;font-weight:300;margin-top:1rem;max-width:560px}
+
+/* ── WHAT WE TEACH ── */
+#teach{padding:7rem 0;background:var(--bg3)}
+.teach-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+  margin-top:4rem;align-items:center;
+}
+.teach-list{display:flex;flex-direction:column;gap:1.2rem}
+.teach-item{
+  display:flex;gap:1.2rem;
+  padding:1.5rem;border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  transition:all .3s;cursor:default;
+}
+.teach-item:hover{
+  border-color:rgba(0,87,255,0.3);
+  background:var(--surface2);
+  transform:translateX(4px);
+  box-shadow:0 4px 24px rgba(0,87,255,0.08);
+}
+.teach-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(0,87,255,0.1),rgba(0,200,150,0.1));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;
+  border:1px solid rgba(0,87,255,0.15);
+}
+.teach-item h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.3rem}
+.teach-item p{color:var(--text2);font-size:.9rem;font-weight:300}
+.teach-visual{
+  position:relative;border-radius:20px;overflow:hidden;
+  border:1px solid var(--border);background:var(--surface);
+  min-height:500px;
+}
+#chart-canvas{width:100%;height:100%}
+
+/* ── COURSES ── */
+#courses{padding:7rem 0;background:#fff}
+.courses-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+  margin-top:4rem;
+}
+.course-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;
+  transition:all .35s;position:relative;overflow:hidden;
+}
+.course-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#0057FF,#00C896);
+  opacity:0;transition:opacity .35s;
+}
+.course-card:hover::before{opacity:1}
+.course-card:hover{
+  border-color:rgba(0,87,255,0.25);
+  background:var(--surface2);
+  transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(0,87,255,0.12);
+}
+.course-card.featured{
+  background:linear-gradient(135deg,rgba(0,87,255,0.04),#fff);
+  border-color:rgba(0,87,255,0.3);
+  grid-column:span 1;
+}
+.course-badge{
+  display:inline-block;font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem;
+}
+.badge-gold{background:rgba(0,87,255,0.08);color:#0057FF;border:1px solid rgba(0,87,255,0.2)}
+.badge-popular{background:rgba(0,200,150,0.1);color:#00956E;border:1px solid rgba(0,200,150,0.3)}
+.badge-premium{background:rgba(255,92,53,0.08);color:#CC3A18;border:1px solid rgba(255,92,53,0.2)}
+.course-card h3{
+  font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;
+  margin-bottom:.6rem;
+}
+.course-card p{color:var(--text2);font-size:.9rem;font-weight:300;margin-bottom:1.5rem;line-height:1.6}
+.course-price{
+  font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,#0057FF,#00C896);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;margin-bottom:1.2rem;
+}
+.course-price sup{font-size:1rem;font-weight:600}
+.course-features{list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.5rem}
+.course-features li{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.88rem;color:var(--text2);
+}
+.course-features li::before{
+  content:'✓';color:#00C896;font-weight:700;font-size:.85rem;
+  flex-shrink:0;
+}
+.btn-enroll{
+  width:100%;padding:.75rem;border-radius:8px;
+  border:2px solid #0057FF;
+  background:transparent;color:#0057FF;
+  font-weight:600;font-size:.95rem;cursor:pointer;
+  transition:all .25s;text-decoration:none;display:block;text-align:center;
+}
+.btn-enroll:hover{background:rgba(0,87,255,0.07)}
+.btn-enroll-primary{
+  background:linear-gradient(135deg,#0057FF,#003DB5);
+  color:#fff;border-color:transparent;
+}
+.btn-enroll-primary:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ── ABOUT ── */
+#about{padding:7rem 0;background:var(--bg3)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-top:4rem}
+.about-img{
+  position:relative;border-radius:20px;overflow:hidden;
+  background:linear-gradient(135deg,#EEF2FF,#E0ECFF);border:1px solid rgba(0,87,255,0.15);
+  min-height:420px;display:flex;align-items:center;justify-content:center;
+}
+.about-gfx{position:relative;width:100%;height:100%;padding:3rem}
+.about-ring{
+  position:absolute;border-radius:50%;
+  border:2px solid rgba(0,87,255,0.2);
+  animation:ringPulse 4s ease-in-out infinite;
+}
+.ring1{width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.ring2{width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s;opacity:.6}
+.ring3{width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:2s;opacity:.3}
+@keyframes ringPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.05);opacity:1}}
+.about-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   text-align:center;
-  margin-bottom:30px;
-  font-size:24px;
 }
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:15px;
+.about-center .logo-big{
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;
+  background:linear-gradient(135deg,#0057FF,#00C896);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-
-/* CARD */
-.card{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  backdrop-filter:blur(10px);
-  padding:18px;
-  border-radius:15px;
-  transition:0.3s;
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.about-stat{padding:1.2rem;background:#fff;border:1px solid rgba(0,87,255,0.15);border-radius:10px;box-shadow:0 2px 12px rgba(0,87,255,0.06)}
+.about-stat .n{
+  font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,#0057FF,#00C896);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
+.about-stat .l{color:var(--text2);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+.about-text p{color:var(--text2);font-weight:300;line-height:1.8;margin-bottom:1rem}
+.values{display:flex;flex-direction:column;gap:.8rem;margin-top:1.5rem}
+.val-item{display:flex;align-items:center;gap:.8rem;font-size:.95rem}
+.val-dot{width:8px;height:8px;background:#0057FF;border-radius:50%;flex-shrink:0}
 
-.card:hover{
-  transform:translateY(-6px);
+/* ── CONTACT ── */
+#contact{padding:7rem 0;background:#fff}
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:5rem;margin-top:4rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.5rem}
+.contact-item{
+  display:flex;gap:1rem;padding:1.5rem;
+  background:var(--bg3);border:1px solid rgba(0,87,255,0.12);border-radius:12px;
+  transition:border-color .25s,box-shadow .25s;
 }
-
-/* COURSE */
-.price{
-  margin-top:8px;
-  color:var(--accent);
-  font-weight:600;
+.contact-item:hover{border-color:rgba(0,87,255,0.3);box-shadow:0 4px 20px rgba(0,87,255,0.08)}
+.contact-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(0,87,255,0.1),rgba(0,200,150,0.1));
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;
+  border:1px solid rgba(0,87,255,0.15);
 }
-
-/* STORY STRIP */
-.highlight{
-  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
-  color:#000;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  font-weight:600;
+.contact-item h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.2rem;color:var(--text)}
+.contact-item p{color:var(--text2);font-size:.9rem}
+.contact-form{
+  background:var(--bg3);border:1px solid rgba(0,87,255,0.15);
+  border-radius:20px;padding:2.5rem;
+  box-shadow:0 8px 40px rgba(0,87,255,0.07);
 }
-
-/* TESTIMONIAL */
-.testimonial{
-  font-size:14px;
-  opacity:0.8;
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:#0057FF;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:.85rem 1rem;
+  background:#fff;border:1.5px solid rgba(0,87,255,0.2);
+  border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:.95rem;transition:border-color .25s,box-shadow .25s;outline:none;
+  appearance:none;
 }
-
-/* CTA STRIP */
-.cta{
-  text-align:center;
-  padding:50px 20px;
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:#0057FF;
+  box-shadow:0 0 0 3px rgba(0,87,255,0.1);
 }
-
-.cta button{
-  padding:16px 30px;
-  border:none;
-  border-radius:30px;
-  background:var(--accent);
-  font-weight:700;
+.form-group select option{background:#fff}
+.form-group textarea{resize:vertical;min-height:120px}
+.form-submit{
+  width:100%;padding:1rem;border-radius:8px;border:none;
+  background:linear-gradient(135deg,#0057FF,#003DB5);
+  color:#fff;font-weight:700;font-size:1rem;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 8px 30px rgba(0,87,255,0.3);
 }
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 50px rgba(0,87,255,0.45)}
 
-/* FOOTER */
+/* ── FOOTER ── */
 footer{
-  text-align:center;
-  padding:30px;
-  font-size:14px;
-  opacity:0.6;
+  background:#EEF2FF;
+  border-top:1px solid rgba(0,87,255,0.12);
+  padding:3rem 0;
+}
+.footer-inner{
+  max-width:1200px;margin:0 auto;padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{color:var(--text2);font-size:.85rem}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{color:var(--text2);text-decoration:none;font-size:.85rem;transition:color .25s}
+.footer-links a:hover{color:#0057FF}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── GLOW ORBS ── */
+.glow-orb{
+  position:fixed;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,87,255,0.06) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.orb1{width:600px;height:600px;top:-200px;right:-100px}
+.orb2{width:500px;height:500px;bottom:100px;left:-100px;background:radial-gradient(circle,rgba(0,200,150,0.05) 0%,transparent 70%)}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .teach-grid,.about-grid,.contact-grid{grid-template-columns:1fr}
+  .courses-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .teach-visual,.about-img{min-height:280px}
+  footer .footer-inner{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr}
+  .about-stats{grid-template-columns:1fr}
 }
 
-/* FLOAT CTA */
-.whatsapp{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#25D366;
-  padding:15px;
-  border-radius:50%;
-  font-size:20px;
-  text-decoration:none;
-  color:white;
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:999;
+  background:#fff;border:2px solid #0057FF;
+  border-radius:12px;padding:1rem 1.5rem;
+  color:var(--text);font-size:.95rem;font-weight:500;
+  transform:translateY(100px);opacity:0;
+  transition:all .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;max-width:320px;
 }
-
-/* MOBILE OPTIMIZATION */
-@media(min-width:768px){
-  .hero h1{
-    font-size:60px;
-  }
-  .hero p{
-    font-size:18px;
-  }
-  nav{
-    padding:20px 40px;
-  }
-}
+.toast.show{transform:translateY(0);opacity:1}
 </style>
 </head>
-
 <body>
 
-<nav>
-<h2>TradeXCorner</h2>
-<div>
-<a href="#learn">Learn</a>
-<a href="#course">Courses</a>
-<a href="#contact">Contact</a>
-</div>
+<div class="glow-orb orb1"></div>
+<div class="glow-orb orb2"></div>
+
+<!-- 3D Canvas -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="logo">TradeX<span>Corner</span></a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#teach">What We Teach</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#about">About Us</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#courses" class="nav-cta">Enroll Now</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-<h1>Master Trading with Clarity</h1>
-<p>No confusion. No complicated theory. Just real market understanding.</p>
-<button>Start Learning</button>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#home" onclick="toggleMenu()">Home</a>
+  <a href="#teach" onclick="toggleMenu()">What We Teach</a>
+  <a href="#courses" onclick="toggleMenu()">Courses</a>
+  <a href="#about" onclick="toggleMenu()">About Us</a>
+  <a href="#contact" onclick="toggleMenu()">Contact</a>
+  <a href="#courses" onclick="toggleMenu()" style="color:#0057FF">Enroll Now ↗</a>
 </div>
 
-<!-- TRUST STRIP -->
-<section>
-<div class="highlight">
-Real Learning • Practical Sessions • Lifetime Support
-</div>
+<!-- HERO -->
+<section id="home">
+  <div>
+    <div class="hero-badge"><span class="dot"></span> Live Trading Room Open</div>
+    <h1>Master the Art of<br><span class="gold">Currency Markets</span></h1>
+    <p class="hero-sub">India's premier mentorship platform for aspiring traders. Learn price action, trading psychology, and proven strategies from professional market analysts.</p>
+    <div class="hero-btns">
+      <a href="#courses" class="btn-primary">Explore Programs</a>
+      <a href="#teach" class="btn-outline">What We Teach →</a>
+    </div>
+  </div>
 </section>
 
-<!-- LEARN -->
-<section id="learn">
-<h2 class="section-title">What You Will Learn</h2>
-<div class="grid">
-<div class="card">Price Action</div>
-<div class="card">Market Structure</div>
-<div class="card">Trading Psychology</div>
-<div class="card">Live Trading</div>
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker"></div>
 </div>
+
+<!-- STATS -->
+<section style="padding:4rem 0">
+  <div class="section-inner">
+    <div class="stats-row reveal">
+      <div class="stat-card">
+        <span class="stat-number" data-target="3200">0</span>
+        <span class="stat-label">Students Trained</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="7">0</span>
+        <span class="stat-label">Years Experience</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="92">0</span>
+        <span class="stat-label">% Success Rate</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="15">0</span>
+        <span class="stat-label">Expert Mentors</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE TEACH -->
+<section id="teach">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="eyebrow">Curriculum</span>
+      <h2 class="section-title">What We <span style="background:linear-gradient(135deg,#0057FF,#00C896);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Teach</span></h2>
+      <p class="section-sub">A comprehensive curriculum designed to take you from beginner to confident market participant.</p>
+    </div>
+    <div class="teach-grid">
+      <div class="teach-list reveal">
+        <div class="teach-item">
+          <div class="teach-icon">📊</div>
+          <div>
+            <h3>Price Action Mastery</h3>
+            <p>Read markets without indicators. Learn candlestick patterns, support & resistance, and structure-based entries used by professional traders.</p>
+          </div>
+        </div>
+        <div class="teach-item">
+          <div class="teach-icon">🧠</div>
+          <div>
+            <h3>Trading Psychology</h3>
+            <p>Conquer fear, greed, and revenge trading. Build the mental fortitude required to execute your strategy with discipline and consistency.</p>
+          </div>
+        </div>
+        <div class="teach-item">
+          <div class="teach-icon">💱</div>
+          <div>
+            <h3>Currency Market Fundamentals</h3>
+            <p>Understand global currency pairs, economic drivers, central bank policies, and how macro events move the markets.</p>
+          </div>
+        </div>
+        <div class="teach-item">
+          <div class="teach-icon">📈</div>
+          <div>
+            <h3>Risk Management & Strategy</h3>
+            <p>Master position sizing, risk-to-reward ratios, and portfolio management to protect and grow your capital long-term.</p>
+          </div>
+        </div>
+        <div class="teach-item">
+          <div class="teach-icon">🎯</div>
+          <div>
+            <h3>Custom Trading Indicators</h3>
+            <p>Proprietary indicators and tools developed by our expert team to give you a technical edge in identifying high-probability setups.</p>
+          </div>
+        </div>
+      </div>
+      <div class="teach-visual reveal">
+        <canvas id="chart-canvas"></canvas>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- COURSES -->
-<section id="course">
-<h2 class="section-title">Mentorship Programs</h2>
-<div class="grid">
+<section id="courses">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="eyebrow">Programs</span>
+      <h2 class="section-title">Choose Your <span style="background:linear-gradient(135deg,#0057FF,#00C896);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Path</span></h2>
+      <p class="section-sub">Carefully structured programs for every stage of your trading journey.</p>
+    </div>
+    <div class="courses-grid">
 
-<div class="card">
-<h3>Price Action</h3>
-<p class="price">₹15,000</p>
-</div>
+      <div class="course-card reveal">
+        <span class="course-badge badge-gold">Foundation</span>
+        <h3>Price Action Course</h3>
+        <p>Learn the core language of markets. Master candlestick analysis, chart patterns, and structure-based trading.</p>
+        <span class="course-price"><sup>₹</sup>15,000</span>
+        <ul class="course-features">
+          <li>Candlestick pattern mastery</li>
+          <li>Support & resistance zones</li>
+          <li>Entry & exit strategies</li>
+          <li>Lifetime access to materials</li>
+        </ul>
+        <a href="#contact" class="btn-enroll">Enroll Now</a>
+      </div>
 
-<div class="card">
-<h3>Psychology</h3>
-<p class="price">₹25,000</p>
-</div>
+      <div class="course-card reveal">
+        <span class="course-badge badge-gold">Mindset</span>
+        <h3>Trading Psychology</h3>
+        <p>The mental game is 80% of trading. Transform your relationship with risk, loss, and market uncertainty.</p>
+        <span class="course-price"><sup>₹</sup>25,000</span>
+        <ul class="course-features">
+          <li>Emotional discipline training</li>
+          <li>Journaling frameworks</li>
+          <li>Cognitive bias recognition</li>
+          <li>Weekly live sessions</li>
+        </ul>
+        <a href="#contact" class="btn-enroll">Enroll Now</a>
+      </div>
 
-<div class="card">
-<h3>Mentorship</h3>
-<p class="price">₹55,555</p>
-</div>
+      <div class="course-card featured reveal">
+        <span class="course-badge badge-popular">⭐ Most Popular</span>
+        <h3>Traders Mentorship Program</h3>
+        <p>Our flagship end-to-end program combining everything you need to become a full-time profitable trader.</p>
+        <span class="course-price"><sup>₹</sup>55,555</span>
+        <ul class="course-features">
+          <li>All course content included</li>
+          <li>1-on-1 mentor sessions</li>
+          <li>Live trade room access</li>
+          <li>Private Telegram community</li>
+          <li>Performance tracking</li>
+        </ul>
+        <a href="#contact" class="btn-enroll btn-enroll-primary">Join Program</a>
+      </div>
 
-<div class="card">
-<h3>Trading Room</h3>
-<p class="price">₹12,000/year</p>
-</div>
+      <div class="course-card reveal">
+        <span class="course-badge badge-gold">Live</span>
+        <h3>Trading Room</h3>
+        <p>Trade live alongside our experts. See real-time analysis, entries, and exits as they happen in the market.</p>
+        <span class="course-price"><sup>₹</sup>12,000 <small style="font-size:.9rem;color:var(--text2);-webkit-text-fill-color:var(--text2)">/yr</small></span>
+        <ul class="course-features">
+          <li>Daily live market sessions</li>
+          <li>Real-time trade alerts</li>
+          <li>Q&A with mentors</li>
+          <li>Session recordings</li>
+        </ul>
+        <a href="#contact" class="btn-enroll">Enroll Now</a>
+      </div>
 
-</div>
+      <div class="course-card reveal">
+        <span class="course-badge badge-premium">Tools</span>
+        <h3>Trading Indicators</h3>
+        <p>Proprietary indicators built by professional traders for TradingView. Gain a measurable technical edge.</p>
+        <span class="course-price"><sup>₹</sup>51,000</span>
+        <ul class="course-features">
+          <li>Custom indicator suite</li>
+          <li>Signal alerts setup</li>
+          <li>Strategy integration guide</li>
+          <li>Lifetime updates</li>
+        </ul>
+        <a href="#contact" class="btn-enroll">Enroll Now</a>
+      </div>
+
+      <div class="course-card reveal">
+        <span class="course-badge badge-gold">Strategy</span>
+        <h3>Panchratna Strategies</h3>
+        <p>Five battle-tested trading strategies refined over years of live market experience across all conditions.</p>
+        <span class="course-price"><sup>₹</sup>15,000</span>
+        <ul class="course-features">
+          <li>5 unique strategy systems</li>
+          <li>Backtested setups</li>
+          <li>Video walkthroughs</li>
+          <li>Strategy worksheets</li>
+        </ul>
+        <a href="#contact" class="btn-enroll">Enroll Now</a>
+      </div>
+
+      <div class="course-card reveal" style="grid-column:span 3">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem">
+          <div style="flex:1;min-width:260px">
+            <span class="course-badge badge-premium">Transformation</span>
+            <h3>Mindset Building Program</h3>
+            <p style="margin-bottom:0">A deep-dive behavioural program combining trading psychology, habit engineering, and performance coaching to permanently transform how you think about and execute in markets.</p>
+          </div>
+          <div style="text-align:center;flex-shrink:0">
+            <span class="course-price" style="font-size:2.4rem"><sup>₹</sup>49,049</span>
+            <a href="#contact" class="btn-enroll" style="white-space:nowrap;min-width:180px">Enroll Now</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
-<!-- TESTIMONIAL -->
-<section>
-<h2 class="section-title">Student Feedback</h2>
-<div class="grid">
-<div class="card testimonial">“Finally no confusion in charts.”</div>
-<div class="card testimonial">“Simple and practical learning.”</div>
-<div class="card testimonial">“Helped me build discipline.”</div>
-</div>
-</section>
-
-<!-- CTA -->
-<section class="cta">
-<h2>Ready to Start?</h2>
-<button>Join Mentorship</button>
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="eyebrow">Our Story</span>
+      <h2 class="section-title">About <span style="background:linear-gradient(135deg,#0057FF,#00C896);-webkit-background-clip:text;-webkit-text-fill-color:transparent">TradeXCorner</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-img reveal">
+        <div style="position:relative;width:100%;height:420px">
+          <div class="about-ring ring3"></div>
+          <div class="about-ring ring2"></div>
+          <div class="about-ring ring1"></div>
+          <div class="about-center">
+            <div class="logo-big">TradeX<br>Corner</div>
+            <p style="color:var(--text2);font-size:.8rem;margin-top:.5rem;letter-spacing:.1em;text-transform:uppercase">Est. 2017</p>
+          </div>
+        </div>
+        <div class="about-stats" style="position:absolute;bottom:1.5rem;left:1.5rem;right:1.5rem;grid-template-columns:1fr 1fr 1fr">
+          <div class="about-stat">
+            <div class="n">3200+</div>
+            <div class="l">Traders</div>
+          </div>
+          <div class="about-stat">
+            <div class="n">₹50Cr+</div>
+            <div class="l">Profits Made</div>
+          </div>
+          <div class="about-stat">
+            <div class="n">7 Yrs</div>
+            <div class="l">Track Record</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <p>TradeXCorner was founded with a singular mission: to demystify currency markets and create a generation of educated, disciplined, and consistently profitable Indian traders.</p>
+        <p>Our founders started as retail traders themselves — making every mistake in the book before discovering what actually works. That real-world experience is the foundation of every course we've built.</p>
+        <p>Today, TradeXCorner is one of India's most trusted trading education platforms, with thousands of students who have gone on to achieve financial independence through disciplined trading.</p>
+        <div class="values">
+          <div class="val-item"><div class="val-dot"></div> Transparency over hype — we show real trades, real results</div>
+          <div class="val-item"><div class="val-dot"></div> Education first — we build traders, not dependents</div>
+          <div class="val-item"><div class="val-dot"></div> Community-driven — our students support each other</div>
+          <div class="val-item"><div class="val-dot"></div> Continuous learning — markets evolve, so do we</div>
+        </div>
+        <div style="margin-top:2rem">
+          <a href="#courses" class="btn-primary">Start Your Journey</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
-<h2 class="section-title">Connect With Us</h2>
-<p style="text-align:center;">
-:contentReference[oaicite:0]{index=0} • 
-:contentReference[oaicite:1]{index=1} • 
-:contentReference[oaicite:2]{index=2}
-</p>
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="eyebrow">Get In Touch</span>
+      <h2 class="section-title">Contact <span style="background:linear-gradient(135deg,#0057FF,#00C896);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Us</span></h2>
+      <p class="section-sub">Ready to begin your trading journey? Reach out and our team will guide you to the right program.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Location</h4>
+            <p>Nagpur, Maharashtra, India</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div>
+            <h4>Email Us</h4>
+            <p>hello@tradexcorner.in</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div>
+            <h4>WhatsApp</h4>
+            <p>+91 00000 00000</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <h4>Support Hours</h4>
+            <p>Mon – Sat, 9 AM – 7 PM IST</p>
+          </div>
+        </div>
+        <div style="padding:1.5rem;background:var(--surface);border:1px solid var(--border2);border-radius:12px;">
+          <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem">Follow us for daily market insights</p>
+          <div style="display:flex;gap:.8rem">
+            <a href="#" style="flex:1;text-align:center;padding:.6rem;border:1px solid var(--border);border-radius:8px;color:var(--text2);text-decoration:none;font-size:.85rem;transition:all .25s" onmouseover="this.style.borderColor='#0057FF';this.style.color='#0057FF'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">Telegram</a>
+            <a href="#" style="flex:1;text-align:center;padding:.6rem;border:1px solid var(--border);border-radius:8px;color:var(--text2);text-decoration:none;font-size:.85rem;transition:all .25s" onmouseover="this.style.borderColor='#0057FF';this.style.color='#0057FF'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">Instagram</a>
+            <a href="#" style="flex:1;text-align:center;padding:.6rem;border:1px solid var(--border);border-radius:8px;color:var(--text2);text-decoration:none;font-size:.85rem;transition:all .25s" onmouseover="this.style.borderColor='#0057FF';this.style.color='#0057FF'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">YouTube</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal">
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem">Send Us a Message</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Rahul" id="fname">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Sharma">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="rahul@example.com" id="femail">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label>Interested In</label>
+          <select>
+            <option value="">Select a program…</option>
+            <option>Price Action Course – ₹15,000</option>
+            <option>Trading Psychology – ₹25,000</option>
+            <option>Traders Mentorship Program – ₹55,555</option>
+            <option>Live Trading Room – ₹12,000/yr</option>
+            <option>Trading Indicators – ₹51,000</option>
+            <option>Panchratna Strategies – ₹15,000</option>
+            <option>Mindset Building Program – ₹49,049</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message (Optional)</label>
+          <textarea placeholder="Tell us about your trading experience…"></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit()">Send Message →</button>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-© 2026 TradeXCorner
+  <div class="footer-inner">
+    <div>
+      <a href="#home" class="logo" style="display:block;margin-bottom:.5rem">TradeX<span>Corner</span></a>
+      <p class="footer-copy">© 2025 TradeXCorner. All rights reserved.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#teach">Curriculum</a>
+      <a href="#courses">Programs</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
 </footer>
 
-<a class="whatsapp" href="https://wa.me/91XXXXXXXXXX">💬</a>
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Message sent! We'll reach out within 24 hours.</div>
 
+<script>
+// ── THREE.JS PARTICLE FIELD ──
+const canvas = document.getElementById('hero-canvas');
+const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+// Particles
+const count = 2000;
+const positions = new Float32Array(count * 3);
+const colors = new Float32Array(count * 3);
+for(let i = 0; i < count; i++){
+  positions[i*3]   = (Math.random()-0.5)*20;
+  positions[i*3+1] = (Math.random()-0.5)*20;
+  positions[i*3+2] = (Math.random()-0.5)*15;
+  const g = Math.random();
+  if(g > 0.85){ colors[i*3]=0.0;colors[i*3+1]=0.34;colors[i*3+2]=1.0; } // blue
+  else if(g > 0.7){ colors[i*3]=0.0;colors[i*3+1]=0.78;colors[i*3+2]=0.59; }   // teal
+  else{ colors[i*3]=0.75;colors[i*3+1]=0.82;colors[i*3+2]=1.0; }               // light blue
+}
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+const mat = new THREE.PointsMaterial({size:.04, vertexColors:true, transparent:true, opacity:.7});
+const particles = new THREE.Points(geo, mat);
+scene.add(particles);
+
+// Floating grid lines
+const gridMat = new THREE.LineBasicMaterial({color:0xC7D7FF,transparent:true,opacity:.4});
+for(let i = -5; i<=5; i++){
+  const geoH = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-10,i,0),new THREE.Vector3(10,i,0)]);
+  const geoV = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,-10,0),new THREE.Vector3(i,10,0)]);
+  scene.add(new THREE.Line(geoH,gridMat));
+  scene.add(new THREE.Line(geoV,gridMat));
+}
+
+// Floating cubes (candlestick-ish)
+const cubes = [];
+for(let i=0;i<8;i++){
+  const h = .2+Math.random()*1.2;
+  const g = new THREE.BoxGeometry(.12, h, .12);
+  const m = new THREE.MeshBasicMaterial({
+    color: Math.random()>.5 ? 0x0057FF : 0x00C896,
+    wireframe:true, transparent:true, opacity:.25+Math.random()*.3
+  });
+  const c = new THREE.Mesh(g,m);
+  c.position.set((Math.random()-.5)*12,(Math.random()-.5)*8,(Math.random()-.5)*4-2);
+  c.userData = {vy:(Math.random()-.5)*.002, vr:Math.random()*.003};
+  cubes.push(c);
+  scene.add(c);
+}
+
+let mouse = {x:0,y:0};
+document.addEventListener('mousemove',e=>{
+  mouse.x=(e.clientX/window.innerWidth-.5)*2;
+  mouse.y=-(e.clientY/window.innerHeight-.5)*2;
+});
+window.addEventListener('resize',()=>{
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  const t = Date.now()*.001;
+  particles.rotation.y += .0003;
+  particles.rotation.x += .0001;
+  camera.position.x += (mouse.x*.5 - camera.position.x)*.03;
+  camera.position.y += (mouse.y*.3 - camera.position.y)*.03;
+  cubes.forEach(c=>{
+    c.position.y += c.userData.vy;
+    c.rotation.y += c.userData.vr;
+    if(c.position.y > 6) c.position.y = -6;
+    if(c.position.y < -6) c.position.y = 6;
+  });
+  renderer.render(scene,camera);
+}
+animate();
+
+// ── CANDLESTICK CHART (teach section) ──
+function drawChart(){
+  const cv = document.getElementById('chart-canvas');
+  if(!cv) return;
+  const parent = cv.parentElement;
+  cv.width = parent.offsetWidth;
+  cv.height = Math.max(parent.offsetHeight, 400);
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='rgba(0,87,255,0.07)';ctx.lineWidth=1;
+  for(let i=0;i<8;i++){
+    const y=H*.1+i*(H*.8/7);
+    ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(W-20,y);ctx.stroke();
+  }
+
+  // Candles
+  const candles=[];
+  let price=1.2200;
+  const n=24;
+  for(let i=0;i<n;i++){
+    const o=price;
+    const change=(Math.random()-.45)*.008;
+    const c=o+change;
+    const hi=Math.max(o,c)+(Math.random()*.004);
+    const lo=Math.min(o,c)-(Math.random()*.004);
+    candles.push({o,c,hi,lo});
+    price=c;
+  }
+  const allH=candles.map(c=>c.hi), allL=candles.map(c=>c.lo);
+  const minP=Math.min(...allL)-.001, maxP=Math.max(...allH)+.001;
+  const toY=p=>H*.85-(p-minP)/(maxP-minP)*(H*.75);
+
+  const cw=(W-60)/(n*1.4);
+  candles.forEach((c,i)=>{
+    const x=40+i*(cw*1.4)+cw*.2;
+    const oY=toY(c.o), cY=toY(c.c);
+    const hiY=toY(c.hi), loY=toY(c.lo);
+    const bull=c.c>=c.o;
+    ctx.strokeStyle=bull?'#00D084':'#FF4757';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x+cw/2,hiY);ctx.lineTo(x+cw/2,loY);ctx.stroke();
+    ctx.fillStyle=bull?'rgba(0,208,132,0.85)':'rgba(255,71,87,0.85)';
+    ctx.fillRect(x,Math.min(oY,cY),cw,Math.max(1,Math.abs(cY-oY)));
+    ctx.strokeStyle=bull?'#00D084':'#FF4757';
+    ctx.strokeRect(x,Math.min(oY,cY),cw,Math.max(1,Math.abs(cY-oY)));
+  });
+
+  // MA line
+  ctx.strokeStyle='rgba(0,87,255,0.75)';ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.beginPath();
+  const ma=5;
+  candles.forEach((c,i)=>{
+    if(i<ma)return;
+    const avg=candles.slice(i-ma,i).reduce((a,b)=>a+b.c,0)/ma;
+    const x=40+i*(cw*1.4)+cw*.5+cw*.2;
+    if(i===ma){ctx.moveTo(x,toY(avg))}else{ctx.lineTo(x,toY(avg))}
+  });
+  ctx.stroke();
+
+  // Price label
+  const lastP=candles[candles.length-1].c;
+  ctx.fillStyle='#0057FF';ctx.font='bold 13px DM Sans,sans-serif';
+  ctx.fillText(lastP.toFixed(4),W-70,toY(lastP)-8);
+
+  // Labels
+  ctx.fillStyle='rgba(90,100,133,0.8)';ctx.font='11px DM Sans,sans-serif';
+  ctx.fillText('EUR/USD — 1H',12,20);
+  ctx.fillStyle='rgba(0,87,255,0.85)';
+  ctx.fillText('▲ MA(5)',W-80,20);
+}
+window.addEventListener('resize',drawChart);
+setTimeout(drawChart,200);
+
+// ── TICKER ──
+const pairs=[
+  {pair:'EUR/USD',p:'1.0847',c:'+0.0023',up:true},
+  {pair:'GBP/USD',p:'1.2634',c:'-0.0041',up:false},
+  {pair:'USD/JPY',p:'149.82',c:'+0.34',up:true},
+  {pair:'AUD/USD',p:'0.6521',c:'-0.0018',up:false},
+  {pair:'USD/CHF',p:'0.8943',c:'+0.0011',up:true},
+  {pair:'NZD/USD',p:'0.5987',c:'-0.0032',up:false},
+  {pair:'USD/CAD',p:'1.3612',c:'+0.0028',up:true},
+  {pair:'EUR/GBP',p:'0.8584',c:'+0.0015',up:true},
+  {pair:'EUR/JPY',p:'162.45',c:'+0.58',up:true},
+  {pair:'GBP/JPY',p:'189.23',c:'-0.72',up:false},
+];
+const ticker=document.getElementById('ticker');
+const html=pairs.map(p=>`<div class="ticker-item"><span class="pair">${p.pair}</span><span class="price">${p.p}</span><span class="change ${p.up?'up':'down'}">${p.c}</span></div>`).join('');
+ticker.innerHTML=html+html; // duplicate for seamless
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// ── COUNTER ANIMATION ──
+function animateCounter(el){
+  const target=+el.dataset.target;
+  const suffix=el.textContent.includes('%')?'%':el.textContent.includes('+')?'+':'';
+  let current=0;
+  const step=target/60;
+  const timer=setInterval(()=>{
+    current=Math.min(current+step,target);
+    el.textContent=Math.round(current)+(target>100?'+':'');
+    if(current>=target)clearInterval(timer);
+  },20);
+}
+
+// ── REVEAL ON SCROLL ──
+const reveals=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      const counters=e.target.querySelectorAll('[data-target]');
+      counters.forEach(animateCounter);
+    }
+  });
+},{threshold:.12});
+reveals.forEach(r=>io.observe(r));
+
+// ── MOBILE MENU ──
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── FORM SUBMIT ──
+function handleSubmit(){
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
 </body>
 </html>
