@@ -3,157 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TradeXCorner</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --primary:#2563eb;
-  --dark:#0f172a;
-  --text:#475569;
-  --bg:#f8fafc;
+:root{
+  --primary:#5B8CFF;
+  --accent:#00F5C4;
+  --dark:#0B1220;
 }
 
-* {
+*{
   margin:0;
   padding:0;
   box-sizing:border-box;
   font-family:'Inter',sans-serif;
 }
 
-body {
-  background:var(--bg);
-  color:var(--dark);
+body{
+  background:linear-gradient(135deg,#0B1220,#1E293B);
+  color:white;
 }
 
-/* NAVBAR */
-nav {
+/* NAV */
+nav{
+  position:fixed;
+  width:100%;
+  padding:15px 20px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:20px 40px;
-  background:white;
-  border-bottom:1px solid #e2e8f0;
-  position:sticky;
-  top:0;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
   z-index:10;
 }
 
-nav h2 {
-  font-weight:700;
+nav h2{
+  color:var(--accent);
 }
 
-nav a {
-  margin-left:20px;
+nav a{
+  color:#ccc;
   text-decoration:none;
-  color:var(--text);
+  margin-left:15px;
+  font-size:14px;
 }
 
 /* HERO */
-.hero {
+.hero{
   padding:120px 20px 80px;
   text-align:center;
-  max-width:800px;
-  margin:auto;
 }
 
-.hero h1 {
-  font-size:48px;
-  line-height:1.2;
+.hero h1{
+  font-size:38px;
+  font-weight:800;
+  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
+  -webkit-background-clip:text;
+  color:transparent;
 }
 
-.hero p {
-  margin-top:15px;
-  color:var(--text);
+.hero p{
+  margin-top:12px;
+  opacity:0.8;
+  font-size:15px;
 }
 
-.btn {
-  margin-top:25px;
-  padding:14px 28px;
+.btn{
+  margin-top:20px;
+  padding:14px 25px;
+  border-radius:30px;
   border:none;
-  border-radius:8px;
-  background:var(--primary);
-  color:white;
+  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
+  color:#000;
   font-weight:600;
   cursor:pointer;
 }
 
 /* SECTION */
-section {
-  padding:80px 20px;
-  max-width:1100px;
-  margin:auto;
+section{
+  padding:60px 20px;
 }
 
-.section-title {
+.section-title{
   text-align:center;
-  margin-bottom:40px;
-  font-size:28px;
+  margin-bottom:30px;
+  font-size:24px;
 }
 
 /* GRID */
-.grid {
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:15px;
 }
 
 /* CARD */
-.card {
-  background:white;
-  padding:25px;
-  border-radius:10px;
-  border:1px solid #e2e8f0;
+.card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  padding:18px;
+  border-radius:15px;
   transition:0.3s;
 }
 
-.card:hover {
-  transform:translateY(-5px);
+.card:hover{
+  transform:translateY(-6px);
 }
 
 /* COURSE */
-.price {
-  margin-top:10px;
-  color:var(--primary);
+.price{
+  margin-top:8px;
+  color:var(--accent);
   font-weight:600;
 }
 
-/* WHY LIST */
-.why {
-  max-width:600px;
-  margin:auto;
-}
-
-.why li {
-  margin-bottom:10px;
+/* STORY STRIP */
+.highlight{
+  background:linear-gradient(45deg,#5B8CFF,#00F5C4);
+  color:#000;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  font-weight:600;
 }
 
 /* TESTIMONIAL */
-.testimonial {
-  font-style:italic;
-  color:var(--text);
+.testimonial{
+  font-size:14px;
+  opacity:0.8;
+}
+
+/* CTA STRIP */
+.cta{
+  text-align:center;
+  padding:50px 20px;
+}
+
+.cta button{
+  padding:16px 30px;
+  border:none;
+  border-radius:30px;
+  background:var(--accent);
+  font-weight:700;
 }
 
 /* FOOTER */
-footer {
+footer{
   text-align:center;
   padding:30px;
-  border-top:1px solid #e2e8f0;
-  margin-top:40px;
+  font-size:14px;
+  opacity:0.6;
 }
 
-/* WHATSAPP */
-.whatsapp {
+/* FLOAT CTA */
+.whatsapp{
   position:fixed;
   bottom:20px;
   right:20px;
   background:#25D366;
-  color:white;
-  padding:14px;
+  padding:15px;
   border-radius:50%;
-  text-decoration:none;
   font-size:20px;
+  text-decoration:none;
+  color:white;
+}
+
+/* MOBILE OPTIMIZATION */
+@media(min-width:768px){
+  .hero h1{
+    font-size:60px;
+  }
+  .hero p{
+    font-size:18px;
+  }
+  nav{
+    padding:20px 40px;
+  }
 }
 </style>
 </head>
@@ -165,79 +193,58 @@ footer {
 <div>
 <a href="#learn">Learn</a>
 <a href="#course">Courses</a>
-<a href="#about">About</a>
 <a href="#contact">Contact</a>
 </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-<h1>Learn Trading the Right Way</h1>
-<p>Simple concepts, real market experience, and disciplined strategies to help you grow consistently.</p>
-<button class="btn">Join Mentorship</button>
+<h1>Master Trading with Clarity</h1>
+<p>No confusion. No complicated theory. Just real market understanding.</p>
+<button>Start Learning</button>
 </div>
 
-<!-- WHAT WE TEACH -->
-<section id="learn">
-<h2 class="section-title">What We Teach</h2>
-<div class="grid">
-<div class="card">Price Action</div>
-<div class="card">Market Understanding</div>
-<div class="card">Trading Psychology</div>
-<div class="card">Live Sessions</div>
+<!-- TRUST STRIP -->
+<section>
+<div class="highlight">
+Real Learning • Practical Sessions • Lifetime Support
 </div>
 </section>
 
-<!-- WHY -->
-<section>
-<h2 class="section-title">Why Choose TradeXCorner?</h2>
-<ul class="why">
-<li>✔ Simplified Learning (No complicated theory)</li>
-<li>✔ Real Market Experience</li>
-<li>✔ Practical Sessions</li>
-<li>✔ Lifetime Support</li>
-<li>✔ Proven Strategies</li>
-</ul>
+<!-- LEARN -->
+<section id="learn">
+<h2 class="section-title">What You Will Learn</h2>
+<div class="grid">
+<div class="card">Price Action</div>
+<div class="card">Market Structure</div>
+<div class="card">Trading Psychology</div>
+<div class="card">Live Trading</div>
+</div>
 </section>
 
 <!-- COURSES -->
 <section id="course">
-<h2 class="section-title">Mentorship Courses</h2>
+<h2 class="section-title">Mentorship Programs</h2>
 <div class="grid">
 
 <div class="card">
-<h3>Price Action Course</h3>
+<h3>Price Action</h3>
 <p class="price">₹15,000</p>
 </div>
 
 <div class="card">
-<h3>Trading Psychology</h3>
+<h3>Psychology</h3>
 <p class="price">₹25,000</p>
 </div>
 
 <div class="card">
-<h3>Mentorship Program</h3>
+<h3>Mentorship</h3>
 <p class="price">₹55,555</p>
 </div>
 
 <div class="card">
 <h3>Trading Room</h3>
-<p class="price">₹12,000 / Year</p>
-</div>
-
-<div class="card">
-<h3>Indicators</h3>
-<p class="price">₹51,000</p>
-</div>
-
-<div class="card">
-<h3>Panchratna Strategies</h3>
-<p class="price">₹15,000</p>
-</div>
-
-<div class="card">
-<h3>Mindset Program</h3>
-<p class="price">₹49,049</p>
+<p class="price">₹12,000/year</p>
 </div>
 
 </div>
@@ -245,30 +252,26 @@ footer {
 
 <!-- TESTIMONIAL -->
 <section>
-<h2 class="section-title">What Our Students Say</h2>
+<h2 class="section-title">Student Feedback</h2>
 <div class="grid">
-<div class="card testimonial">"Clear concepts and real learning."</div>
-<div class="card testimonial">"No confusion anymore, very practical."</div>
-<div class="card testimonial">"Best investment I made in myself."</div>
+<div class="card testimonial">“Finally no confusion in charts.”</div>
+<div class="card testimonial">“Simple and practical learning.”</div>
+<div class="card testimonial">“Helped me build discipline.”</div>
 </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about">
-<h2 class="section-title">About Us</h2>
-<p style="text-align:center; max-width:700px; margin:auto;">
-TradeXCorner is a professional trading education platform focused on helping traders build mindset, discipline, and strong strategies from beginner to advanced level.
-</p>
+<!-- CTA -->
+<section class="cta">
+<h2>Ready to Start?</h2>
+<button>Join Mentorship</button>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
-<h2 class="section-title">Contact Us</h2>
+<h2 class="section-title">Connect With Us</h2>
 <p style="text-align:center;">
-Reach us on 
-:contentReference[oaicite:0]{index=0}, 
-:contentReference[oaicite:1]{index=1} 
-and 
+:contentReference[oaicite:0]{index=0} • 
+:contentReference[oaicite:1]{index=1} • 
 :contentReference[oaicite:2]{index=2}
 </p>
 </section>
@@ -277,7 +280,7 @@ and
 © 2026 TradeXCorner
 </footer>
 
-<a class="whatsapp" href="https://wa.me/9175961465">💬</a>
+<a class="whatsapp" href="https://wa.me/91XXXXXXXXXX">💬</a>
 
 </body>
 </html>
