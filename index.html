@@ -3,19 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>TradeXCorner</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --primary:#00E5FF;
-  --accent:#7CFFCB;
-  --dark:#0B1220;
+  --primary:#2563eb;
+  --dark:#0f172a;
+  --text:#475569;
+  --bg:#f8fafc;
 }
 
 * {
@@ -26,151 +23,142 @@
 }
 
 body {
-  background:linear-gradient(135deg,#f0fbff,#ffffff);
+  background:var(--bg);
   color:var(--dark);
-  overflow-x:hidden;
 }
 
 /* NAVBAR */
 nav {
-  position:fixed;
-  width:100%;
   display:flex;
   justify-content:space-between;
+  align-items:center;
   padding:20px 40px;
-  background:rgba(255,255,255,0.8);
-  backdrop-filter:blur(10px);
+  background:white;
+  border-bottom:1px solid #e2e8f0;
+  position:sticky;
+  top:0;
   z-index:10;
 }
 
 nav h2 {
-  color:var(--primary);
+  font-weight:700;
 }
 
 nav a {
   margin-left:20px;
   text-decoration:none;
-  color:#333;
-  font-weight:500;
+  color:var(--text);
 }
 
 /* HERO */
 .hero {
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  padding:120px 20px 80px;
   text-align:center;
-  flex-direction:column;
+  max-width:800px;
+  margin:auto;
 }
 
 .hero h1 {
-  font-size:65px;
-  background:linear-gradient(45deg,#00E5FF,#7CFFCB);
-  -webkit-background-clip:text;
-  color:transparent;
+  font-size:48px;
+  line-height:1.2;
 }
 
 .hero p {
   margin-top:15px;
-  max-width:600px;
-  opacity:0.7;
+  color:var(--text);
 }
 
 .btn {
   margin-top:25px;
-  padding:14px 30px;
-  border-radius:30px;
+  padding:14px 28px;
   border:none;
+  border-radius:8px;
   background:var(--primary);
-  color:#000;
+  color:white;
   font-weight:600;
   cursor:pointer;
-  transition:0.3s;
-}
-
-.btn:hover {
-  transform:scale(1.05);
 }
 
 /* SECTION */
 section {
-  padding:100px 20px;
+  padding:80px 20px;
   max-width:1100px;
   margin:auto;
+}
+
+.section-title {
+  text-align:center;
+  margin-bottom:40px;
+  font-size:28px;
 }
 
 /* GRID */
 .grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:25px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
 }
 
 /* CARD */
 .card {
   background:white;
   padding:25px;
-  border-radius:18px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.08);
-  transition:0.4s;
+  border-radius:10px;
+  border:1px solid #e2e8f0;
+  transition:0.3s;
 }
 
 .card:hover {
-  transform:translateY(-10px);
+  transform:translateY(-5px);
 }
 
-/* TICKER */
-.ticker {
-  background:var(--primary);
-  padding:10px;
-  color:#000;
+/* COURSE */
+.price {
+  margin-top:10px;
+  color:var(--primary);
   font-weight:600;
-  overflow:hidden;
 }
 
-.ticker span {
-  display:inline-block;
-  padding-left:100%;
-  animation:ticker 15s linear infinite;
+/* WHY LIST */
+.why {
+  max-width:600px;
+  margin:auto;
 }
 
-@keyframes ticker {
-  0% { transform:translateX(0); }
-  100% { transform:translateX(-100%); }
+.why li {
+  margin-bottom:10px;
 }
 
 /* TESTIMONIAL */
 .testimonial {
   font-style:italic;
+  color:var(--text);
 }
 
-/* CTA FLOAT */
+/* FOOTER */
+footer {
+  text-align:center;
+  padding:30px;
+  border-top:1px solid #e2e8f0;
+  margin-top:40px;
+}
+
+/* WHATSAPP */
 .whatsapp {
   position:fixed;
   bottom:20px;
   right:20px;
   background:#25D366;
-  padding:16px;
-  border-radius:50%;
   color:white;
-  font-size:22px;
+  padding:14px;
+  border-radius:50%;
   text-decoration:none;
-}
-
-/* THREE BG */
-#bg {
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:-1;
+  font-size:20px;
 }
 </style>
 </head>
 
 <body>
-
-<canvas id="bg"></canvas>
 
 <nav>
 <h2>TradeXCorner</h2>
@@ -178,109 +166,118 @@ section {
 <a href="#learn">Learn</a>
 <a href="#course">Courses</a>
 <a href="#about">About</a>
+<a href="#contact">Contact</a>
 </div>
 </nav>
 
-<div class="ticker">
-<span>📈 +₹12,450 | +₹8,200 | +₹21,900 | +₹6,500 | Real Learning • Real Growth</span>
-</div>
-
 <!-- HERO -->
 <div class="hero">
-<h1>Master Smart Trading</h1>
-<p>Build mindset, strategy, and discipline with real market experience.</p>
-<button class="btn">Start Your Journey</button>
+<h1>Learn Trading the Right Way</h1>
+<p>Simple concepts, real market experience, and disciplined strategies to help you grow consistently.</p>
+<button class="btn">Join Mentorship</button>
 </div>
 
-<!-- LEARNING -->
+<!-- WHAT WE TEACH -->
 <section id="learn">
-<h2>What You Will Learn</h2>
+<h2 class="section-title">What We Teach</h2>
 <div class="grid">
 <div class="card">Price Action</div>
-<div class="card">Market Structure</div>
+<div class="card">Market Understanding</div>
 <div class="card">Trading Psychology</div>
 <div class="card">Live Sessions</div>
 </div>
 </section>
 
-<!-- COURSES -->
-<section id="course">
-<h2>Mentorship Programs</h2>
-<div class="grid">
-<div class="card">Price Action - ₹15,000</div>
-<div class="card">Psychology - ₹25,000</div>
-<div class="card">Mentorship - ₹55,555</div>
-<div class="card">Trading Room - ₹12,000/year</div>
-</div>
+<!-- WHY -->
+<section>
+<h2 class="section-title">Why Choose TradeXCorner?</h2>
+<ul class="why">
+<li>✔ Simplified Learning (No complicated theory)</li>
+<li>✔ Real Market Experience</li>
+<li>✔ Practical Sessions</li>
+<li>✔ Lifetime Support</li>
+<li>✔ Proven Strategies</li>
+</ul>
 </section>
 
-<!-- STORY -->
-<section>
-<h2>Why TradeXCorner?</h2>
+<!-- COURSES -->
+<section id="course">
+<h2 class="section-title">Mentorship Courses</h2>
 <div class="grid">
-<div class="card">Simplified Learning</div>
-<div class="card">Real Market Exposure</div>
-<div class="card">Lifetime Support</div>
-<div class="card">Proven Strategies</div>
+
+<div class="card">
+<h3>Price Action Course</h3>
+<p class="price">₹15,000</p>
+</div>
+
+<div class="card">
+<h3>Trading Psychology</h3>
+<p class="price">₹25,000</p>
+</div>
+
+<div class="card">
+<h3>Mentorship Program</h3>
+<p class="price">₹55,555</p>
+</div>
+
+<div class="card">
+<h3>Trading Room</h3>
+<p class="price">₹12,000 / Year</p>
+</div>
+
+<div class="card">
+<h3>Indicators</h3>
+<p class="price">₹51,000</p>
+</div>
+
+<div class="card">
+<h3>Panchratna Strategies</h3>
+<p class="price">₹15,000</p>
+</div>
+
+<div class="card">
+<h3>Mindset Program</h3>
+<p class="price">₹49,049</p>
+</div>
+
 </div>
 </section>
 
 <!-- TESTIMONIAL -->
 <section>
-<h2>What Our Students Say</h2>
+<h2 class="section-title">What Our Students Say</h2>
 <div class="grid">
-<div class="card testimonial">"Finally understood trading clearly."</div>
-<div class="card testimonial">"No theory, pure practical."</div>
-<div class="card testimonial">"Best decision I made."</div>
+<div class="card testimonial">"Clear concepts and real learning."</div>
+<div class="card testimonial">"No confusion anymore, very practical."</div>
+<div class="card testimonial">"Best investment I made in myself."</div>
 </div>
 </section>
 
 <!-- ABOUT -->
 <section id="about">
-<h2>About Us</h2>
-<p>
-TradeXCorner helps traders develop a profitable mindset, discipline, and real strategies.
+<h2 class="section-title">About Us</h2>
+<p style="text-align:center; max-width:700px; margin:auto;">
+TradeXCorner is a professional trading education platform focused on helping traders build mindset, discipline, and strong strategies from beginner to advanced level.
 </p>
 </section>
 
+<!-- CONTACT -->
+<section id="contact">
+<h2 class="section-title">Contact Us</h2>
+<p style="text-align:center;">
+Reach us on 
+:contentReference[oaicite:0]{index=0}, 
+:contentReference[oaicite:1]{index=1} 
+and 
+:contentReference[oaicite:2]{index=2}
+</p>
+</section>
+
+<footer>
+© 2026 TradeXCorner
+</footer>
+
 <a class="whatsapp" href="https://wa.me/91XXXXXXXXXX">💬</a>
-
-<script>
-// THREE JS BACKGROUND
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
-const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('bg'),alpha:true});
-
-renderer.setSize(window.innerWidth,window.innerHeight);
-camera.position.z = 5;
-
-const geometry = new THREE.BufferGeometry();
-const count = 800;
-const positions = new Float32Array(count*3);
-
-for(let i=0;i<count*3;i++){
-  positions[i]=(Math.random()-0.5)*10;
-}
-
-geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
-
-const material = new THREE.PointsMaterial({size:0.02,color:'#00E5FF'});
-const mesh = new THREE.Points(geometry,material);
-
-scene.add(mesh);
-
-function animate(){
-  requestAnimationFrame(animate);
-  mesh.rotation.y += 0.001;
-  renderer.render(scene,camera);
-}
-animate();
-
-// GSAP ANIMATIONS
-gsap.from(".hero h1",{opacity:0,y:-60,duration:1});
-gsap.from(".hero p",{opacity:0,y:40,duration:1,delay:0.3});
-gsap.from(".card",{opacity:0,y:50,stagger:0.2,duration:1});
-</script>
 
 </body>
 </html>
